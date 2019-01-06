@@ -74,5 +74,25 @@ Frame-Code:
 
 The Frame-Code is a superior frame, which contains the mentioned functions. It determines if a jump is registered and if a height-measurement gets executed. It also contains the code for storing relevant values (jump-heights, jump-durations...) and maybe displaying values on the LCD-screen. 
 
-
  
+3. Status
+
+Motion-Sensor-Approach:
+
+- Knowing it´s tilt code is working as intended
+- Calculating Jump height from Z-Axis-Acceleration
+ToDo: Both codes have to be combined with a filter to accomplish true Jump-Height while tilted.
+
+Barometer-Approach:
+
+- Waiting for Barometer to arrive
+
+GPS-Approach:
+
+- More research needed, if common GPS-Modules use Doppler-Velocities and how to get this Data:
+https://forum.arduino.cc/index.php?topic=589092.0
+- 3D Data without Doppler velococity could still be helpful, looking at the example of drone software INAV:
+It´s questionable if they use 3D Position Data or Doppler Velocity from GPS. I assume they use 3D Position.
+https://github.com/iNavFlight/inav/issues/1685 
+https://github.com/iNavFlight/inav/wiki/Navigation-modes --> AltHold a)
+
