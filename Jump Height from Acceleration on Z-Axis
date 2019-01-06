@@ -1,0 +1,107 @@
+#include "MPU9250.h"
+
+// an MPU9250 object with the MPU-9250 sensor on I2C bus 0 with address 0x68
+MPU9250 IMU(Wire, 0x68);
+int status;
+float azb;
+float azs;
+float ZAcc;
+float T1;
+float T2;
+float Sprungzeit;
+float SprungzeitinSekunden;
+float SummeAccZSprung; //für Durschnittsberechnung danach
+float DurchschnittlicheAccZSprung;
+float AnzahlMesswerteSprung;
+float Sprunghoehe;
+float XGyro;
+float YGyro;
+float ZGyro;
+
+void setup() {
+  // serial to display data
+  Serial.begin(115200);
+  while (!Serial) {}
+
+  // start communication with IMU
+  status = IMU.begin();
+  if (status < 0) {
+    Serial.println("IMU initialization unsuccessful");
+    Serial.println("Check IMU wiring or try cycling power");
+    Serial.print("Status: ");
+    Serial.println(status);
+    while (1) {}                      // ?Wenn Status  = 1 stoppt das Programm?
+  }
+
+  status = IMU.calibrateAccel();      // sollte Accelerometer kalibrieren, ob funktioniert unklar, bias auf z-Achse bleibt
+  float azb = -9.70;                  // Entfernen des Offset auf der Z-Achse
+  float azs = 1.00;                   // legt den Scale der AccZ fest, muss für folgende Set-Funktion definiert werden
+  IMU.setAccelCalZ(azb, azs);         // Übertragung der oberen Daten, = mauelle Kalibrierung, entfernt das OffSet auf AccZ
+  Serial.println("Setup completed");
+}
+
+void loop() {                         // Bereits deklarierte Variablen nicht mehr Datentyp davor schreiben, SONST werden SIE NEU DEKLARIERT
+  // read the sensor
+  IMU.readSensor();
+  ZAcc = IMU.getAccelZ_mss();
+  XGyro = IMU.getGyroX_rads();
+  YGyro = IMU.getGyroY_rads();
+  ZGyro = IMU.getGyroZ_rads();
+ 
+  Serial.println("XGyro:");   // für Ausgabe der Sprunghöhe hier irrelevant
+  Serial.println(XGyro);
+  Serial.println("YGyro:");
+  Serial.println(YGyro);
+  Serial.println("ZGyro:");
+  Serial.println(ZGyro);
+
+
+  
+  while (ZAcc > 1)
+  {
+    T1 = millis ();
+    Serial.println("Startzeitpunkt Sprung");
+    Serial.println(T1);
+    IMU.readSensor();
+    ZAcc = IMU.getAccelZ_mss();
+
+    while (ZAcc > 1)
+    {
+      IMU.readSensor();
+      ZAcc = IMU.getAccelZ_mss();
+      Serial.println("Im Sprung mit ");
+      Serial.println(ZAcc);           // 1 m/s2 = 0.101972 g ; Angabe der Beschleunigung in MSS = Meter pro Sekunde pro Sekunde = Beschleunigung = Wie viel Meter in der Sekunde pro Sekunde = Meter pro Sekunde wäre Geschwindigkeit statt Beschleunigung
+      AnzahlMesswerteSprung = AnzahlMesswerteSprung + 1;
+      SummeAccZSprung = SummeAccZSprung + ZAcc;
+
+    }        //Mache nix solange noch im Sprung, nach einer Durchführung wird die Bedingung erneut geprüf
+
+    Serial.println("Scheitelpunkt erreicht");
+    T2 = millis ();         //Sobald nicht mehr im Sprung bzw. am Scheitelpunkt, berechne Sprungzeit
+    Sprungzeit = T2 - T1;
+    SprungzeitinSekunden = Sprungzeit / 1000;
+    DurchschnittlicheAccZSprung = SummeAccZSprung / AnzahlMesswerteSprung;
+    Sprunghoehe = 0.5 * DurchschnittlicheAccZSprung * pow(SprungzeitinSekunden, 2);
+    Serial.println("Sprungzeit in Millisekunden:");
+    Serial.println(Sprungzeit);
+    Serial.println("SummeAccZSprung in M/S/S:");
+    Serial.println(SummeAccZSprung);
+    Serial.println("AnzahlMessungen:");
+    Serial.println(AnzahlMesswerteSprung);
+    Serial.println("DurchschnittlicheAccZSprung in M/S/S:");
+    Serial.println(DurchschnittlicheAccZSprung);
+    Serial.println("Das entspricht einer Sprunghöhe von");
+    Serial.println(Sprunghoehe);
+    Serial.print(" Metern");
+  }
+  Serial.println("Kein Sprung");
+}
+
+
+
+
+
+
+
+
+// noch detaillierer Code in Beispiele -> MPU9250 -> I2C Advanced, siehe https://www.youtube.com/watch?v=mzwovYcozvI
