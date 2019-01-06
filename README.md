@@ -79,8 +79,8 @@ The Frame-Code is a superior frame, which contains the mentioned functions. It d
 
 Motion-Sensor-Approach:
 
-- Knowing it´s tilt code is working as intended
-- Calculating Jump height from Z-Axis-Acceleration
+- Knowing it´s tilt code is working as intended.
+- Calculating Jump height from Z-Axis-Acceleration is working as intended.
 ToDo: Both codes have to be combined with a filter to accomplish true Jump-Height while tilted.
 
 Barometer-Approach:
