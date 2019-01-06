@@ -26,7 +26,7 @@ Another interesting way to measure jump heigth is the usage of a barometer-senso
 So far this sensor is used: GY-MS5803-14BA
 
 (GPS):
-Using a GPS-Sensor could be another option. Simply using the 3D position of the GPS for vertical height wont be enough, due to the fact that is has an average error of 2 metres. The speed measurement of a GPS Unit is much more precise because it does not depend on the 3D position data but use something called "Doppler Shift". It is questionable if a GPS-Unit not only measures horizontal speed but also vertical speed with this technology. If so you could easily use Vertical Speed from the GPS to calculate vertical height. 
+Using a GPS-Sensor could be another option. Simply using the 3D position of the GPS for vertical height wont be enough, due to the fact that is has an average error of 2 metres. The speed measurement of a GPS Unit is much more precise because it does not depend on the 3D position data but use something called "Doppler Shift". Example giving, with 7 satellites locked on the GPS Unit the speed measurement is as precise as 7 radar guns pointed at the unit. It is still questionable if a GPS-Unit not only measures horizontal speed but also vertical speed with this technology. If so you could easily use Vertical Speed from the GPS to calculate vertical height. 
 
 
 Experiments have to show which sensor works best. Maybe the combination of multiple sensors could lead to a minimum of measurement-errors. 
